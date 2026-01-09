@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Bell, LogIn, Rabbit, Shield } from "lucide-react";
+import { Bell, LogIn, Rabbit, Shield, TrendingDown } from "lucide-react";
 import Image from "next/image";
+import AddProductForm from "@/components/AddProductFrom";
+import AuthButton from "@/components/AuthButton";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Home() {
-  const user = null;
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const products = [];
   const FEATURES = [
     {
@@ -31,7 +35,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Image src="/deal-drop-logo.png" alt="logo" height={200} width={600} className="h-10 w-auto" />
           </div>
-          <Button variant="default" size="sm" className="bg-orange-500 hover:bg-orange-600"><LogIn className="w-4 h-4" /> Sign In</Button>
+          <AuthButton user={user} />
 
         </div>
       </header>
@@ -52,7 +56,7 @@ export default function Home() {
 
 
           {/* products form */}
-
+          <AddProductForm user={user} />
           {/* Features */}
 
           {products.length === 0 && (
@@ -62,12 +66,36 @@ export default function Home() {
                   <div className="w-12 h-12 bg-orange-100 rounded-lg flex justify-center mb-4 mx-auto items-center">
                     <Icon className="w-6 h-6 text-orange-500" />
                   </div>
+
+                  <h3 className="text-semibold text-gray-900 mb-2">
+                    {title}
+                  </h3>
+
+                  <p className="text-sm text-gray-600">
+                    {description}
+                  </p>
                 </div>
               ))}
             </div>
           )}
         </div>
       </section>
+
+      
+      {/* Empty State */}
+      {user && products.length === 0 && (
+        <section className="max-w-2xl mx-auto px-4 pb-20 text-center">
+          <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12">
+            <TrendingDown className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No products yet
+            </h3>
+            <p className="text-gray-600">
+              Add your first product above to start tracking prices!
+            </p>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
