@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "components/AuthModel.js"  ],
+, "components/AuthModel.js", "lib/email.js"  ],
   "exclude": ["node_modules"]
 }
